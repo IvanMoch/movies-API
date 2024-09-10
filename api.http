@@ -1,0 +1,29 @@
+### Getting all the movies
+
+GET http://Localhost:3000/movies
+
+### Getting a movie by its ID
+
+GET http://Localhost:3000/movies/2147a25e-60da-11ef-8c0b-900f0c400779
+
+### Update a movie 
+PATCH  http://Localhost:3000/movies/2147a25e-60da-11ef-8c0b-900f0c400779
+Content-Type: application/json
+
+{
+    "title" : "Cry Bernabeu Cry",
+    "director": "Joseph Guardiola",
+    "rate": 7.6
+}
+
+### create a movie
+
+POST http://Localhost:3000/movies
+Content-Type: application/json
+
+{
+    "title": "The last dance",
+    "director": "Totti",
+    "duration": 162,
+    "poster": "https://i.ebayimg.com/images/g/MVQAAOSwbtBjBhF2/s-l1600.webpg"
+}
