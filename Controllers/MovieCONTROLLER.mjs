@@ -19,14 +19,15 @@ export class MovieController{
     }
 
     static createMovie = async (req, res) => {
-        
+
+        const genres = (req.body).genre
         const newMovie = validateMovie(req.body)
 
         if (newMovie.error) {
             return res.status(400).json({ error: "You have to follow all the instructions" })
         }
 
-        const movie = await MovieModel.createMovie({ newMovie })
+        const movie = await MovieModel.createMovie({ newMovie, genres })
         
         res.status(201).json(movie)
         
@@ -40,5 +41,19 @@ export class MovieController{
         const modifiedMovie = await MovieModel.updateMovie({ newData, id })
         
         res.status(200).json(modifiedMovie)
+    }
+
+    static getByGender = async (req, res) => {
+
+        const { genre } = req.params
+        
+        const movies = await MovieModel.getByGenre({genre})
+
+        if (movies) {
+            res.status(200).json(movies)
+        } else {
+            res.json({message: 'There is no movies with that genre'})
+        }
+        
     }
 }

@@ -5,8 +5,10 @@ export const moviesRouter = new Router()
 
 moviesRouter.get('/', MovieController.getAll)
 
-moviesRouter.get('/:id', MovieController.getByID)
+moviesRouter.get('/id/:id', MovieController.getByID)
 
-moviesRouter.patch('/:id', MovieController.updateMovie)
+moviesRouter.patch('/id/:id', MovieController.updateMovie)
 
 moviesRouter.post('/', MovieController.createMovie)
+
+moviesRouter.get('/genre/:genre', MovieController.getByGender)
