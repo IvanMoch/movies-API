@@ -14,14 +14,15 @@ import { pool } from '../db.mjs'
 
 export class MovieModel{
     static async getAll() {
-        const [movies] = await pool.query('select BIN_TO_UUID(id) as id, title, director, duration, poster, rate from movies.movie ')
+      const [movies] = await pool.query(`
+        select BIN_TO_UUID(id) as id, title, director, duration, poster, rate from movie `)
         return movies
     }
   
   static async getBydID({ id }) {
 
 
-    const [movie] = await pool.query('select BIN_TO_UUID(id) as id, title, director, duration, poster, rate from movies.movie where bin_to_uuid(id) = ? ', [id])
+    const [movie] = await pool.query(`select BIN_TO_UUID(id) as id, title, director, duration, poster, rate from movie where bin_to_uuid(id) = ? `, [id])
     if (movie.length == 0) {
       return false
     }
@@ -42,15 +43,15 @@ export class MovieModel{
       ...newMovie.data
     }
 
-      await pool.query(`
-      insert into movies.movie(id,title,director,duration,poster,rate)
+    await pool.query(`
+      insert into movie(id,title,director,duration,poster,rate)
       values(UUID_TO_BIN(?),?,?,?,?,?)`, [movie.id, movie.title, movie.director, movie.duration, movie.poster, movie.rate])
     
     genres.forEach(async (element) => {
       
-      const [data] = await pool.query('select id as genreID from movies.genre where name = ? ', [element])
+      const [data] = await pool.query(`select id as genreID from genre where name = ? `, [element])
 
-      await pool.query('insert into movies.movie_genres values (UUID_TO_BIN(?),?)',[id,data[0].genreID])
+      await pool.query(` insert into movie_genres values (UUID_TO_BIN(?),?)`,[id,data[0].genreID])
    });
     
     
@@ -59,14 +60,16 @@ export class MovieModel{
 
   static async updateMovie({ newData, id }) {
 
-  const [movie] = await pool.query('select UUID_TO_BIN(id) as id, title, director, duration, poster, rate from movies.movie where BIN_TO_UUID(id) = ? ', [id])    
+
+
+  const [movie] = await pool.query(`select BIN_TO_UUID(id) as id, title, director, duration, poster, rate from movie where BIN_TO_UUID(id) = ? `, [id])    
     if (movie[0]) {
       const modifiedMovie = {
         ...movie[0],
         ...newData.data
       }
-    await pool.query(`
-      update movies.movie
+      await pool.query(`
+      update movie
       set title = ?, director = ?, duration = ?, poster = ?, rate = ?
       where BIN_TO_UUID(id) = ?`, [modifiedMovie.title, modifiedMovie.director, modifiedMovie.duration, modifiedMovie.poster, modifiedMovie.rate, id])
       
@@ -80,13 +83,11 @@ export class MovieModel{
   }
 
   static async getByGenre({ genre }) {
-    const [data] = await pool.query('select id as genreID from movies.genre where name = ? ', [genre])
-    
-    console.log(data[0].genreID)
+    const [data] = await pool.query(` select id as genreID from genre where name = ? `, [genre])
 
     const [movies] = await pool.query(`
-      select BIN_TO_UUID(id) as id, title, director, duration, poster, rate from movies.movie m 
-      join movies.movie_genres mg on mg.movie_id = m.id and mg.genre_id = ?
+      select BIN_TO_UUID(id) as id, title, director, duration, poster, rate from movie m 
+      join movie_genres mg on mg.movie_id = m.id and mg.genre_id = ?
       `, [data[0].genreID])
     
     if (movies) {
