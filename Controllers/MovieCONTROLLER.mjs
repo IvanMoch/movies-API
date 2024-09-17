@@ -46,6 +46,8 @@ export class MovieController{
     static getByGender = async (req, res) => {
 
         const { genre } = req.params
+
+        console.log("...")
         
         const movies = await MovieModel.getByGenre({genre})
 
