@@ -82,6 +82,8 @@ export class MovieModel{
   static async getByGenre({ genre }) {
     const [data] = await pool.query('select id as genreID from movies.genre where name = ? ', [genre])
     
+    console.log(data[0].genreID)
+
     const [movies] = await pool.query(`
       select BIN_TO_UUID(id) as id, title, director, duration, poster, rate from movies.movie m 
       join movies.movie_genres mg on mg.movie_id = m.id and mg.genre_id = ?
