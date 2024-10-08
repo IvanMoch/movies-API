@@ -1,13 +1,16 @@
 ### Getting all the movies
 
-GET http://Localhost:3000/movies
+GET http://Localhost:3000/movies?page=3&limit=5
 
 ### Getting a movie by its ID
+GET http://Localhost:3000/movies/id/2147a25e-60da-11ef-8c0b-900f0c400779
 
-GET http://Localhost:3000/movies/2147a25e-60da-11ef-8c0b-900f0c400779
+### Getting movie by genre
+
+GET http://Localhost:3000/movies/genre/Action
 
 ### Update a movie 
-PATCH  http://Localhost:3000/movies/2147a25e-60da-11ef-8c0b-900f0c400779
+PATCH  http://Localhost:3000/movies/id/2147a25e-60da-11ef-8c0b-900f0c400779
 Content-Type: application/json
 
 {
@@ -18,12 +21,14 @@ Content-Type: application/json
 
 ### create a movie
 
+
 POST http://Localhost:3000/movies
 Content-Type: application/json
 
 {
-    "title": "The last dance",
-    "director": "Totti",
+    "title": "A season in a row",
+    "director": "M. Verstappen",
     "duration": 162,
-    "poster": "https://i.ebayimg.com/images/g/MVQAAOSwbtBjBhF2/s-l1600.webpg"
+    "genre": ["Action", "Drama"],
+    "poster": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrh6E9W2yRjT4-LXlMn8JucRtVYDHPjwWNAw&s"
 }

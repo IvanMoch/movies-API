@@ -3,8 +3,31 @@ import { validateMovie, validatePartialMovie } from "../Schemas/moviesSchema.mjs
 export class MovieController{
     static getAll = async (req, res) => {
         
-        const movies = await MovieModel.getAll()
-        res.json(movies)
+       const page = Number(req.query.page)
+        const limit = Number(req.query.limit)
+        const offset = (page - 1) * limit
+        const tableLength = await MovieModel.getNumberRows()
+        const results = {}
+
+        const data = await MovieModel.getAll({ offset: offset, limit: limit })
+
+        results.results = data
+
+        if (page > 1) {
+            results.previous = {
+                page: page - 1,
+                limit : limit
+            }
+        }
+
+        if (page < tableLength) {
+            results.next = {
+                page: page + 1,
+                limit : limit
+            }
+        }
+
+        res.json(results)
     }
 
     static getByID = async (req, res) => {
@@ -19,14 +42,15 @@ export class MovieController{
     }
 
     static createMovie = async (req, res) => {
-        
+
+        const genres = (req.body).genre
         const newMovie = validateMovie(req.body)
 
         if (newMovie.error) {
             return res.status(400).json({ error: "You have to follow all the instructions" })
         }
 
-        const movie = await MovieModel.createMovie({ newMovie })
+        const movie = await MovieModel.createMovie({ newMovie, genres })
         
         res.status(201).json(movie)
         
@@ -40,5 +64,20 @@ export class MovieController{
         const modifiedMovie = await MovieModel.updateMovie({ newData, id })
         
         res.status(200).json(modifiedMovie)
+    }
+
+    static getByGender = async (req, res) => {
+
+        const { genre } = req.params
+
+        
+        const movies = await MovieModel.getByGenre({genre})
+
+        if (movies) {
+            res.status(200).json(movies)
+        } else {
+            res.json({message: 'There is no movies with that genre'})
+        }
+        
     }
 }
