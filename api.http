@@ -1,6 +1,6 @@
 ### Getting all the movies
 
-GET http://Localhost:3000/movies
+GET http://Localhost:3000/movies?page=3&limit=5
 
 ### Getting a movie by its ID
 GET http://Localhost:3000/movies/id/2147a25e-60da-11ef-8c0b-900f0c400779

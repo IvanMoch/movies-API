@@ -12,12 +12,32 @@ import { pool } from '../db.mjs'
 
 //const connection = await mysql.createConnection(config)
 
-export class MovieModel{
-    static async getAll() {
-      const [movies] = await pool.query(`
-        select BIN_TO_UUID(id) as id, title, director, duration, poster, rate from movie `)
-        return movies
+export class MovieModel {
+  static async getAll({ offset = 0, limit = null } = {}) {
+  try {
+    if (limit !== null) {
+      const [movies] = await pool.query('SELECT BIN_TO_UUID(id) as id, title, director, duration, poster, rate FROM movies.movie LIMIT ? OFFSET ?', [limit, offset]);
+      return movies;
     }
+
+    const [movies] = await pool.query(`
+      SELECT BIN_TO_UUID(id) as id, title, director, duration, poster, rate 
+      FROM movie`);
+    return movies;
+  } catch (error) {
+    console.error('Error fetching movies:', error);
+    throw error;
+  }
+}
+
+
+  static async getNumberRows() {
+    const [data] = await pool.query('SELECT count(*) as count from movies.movie')
+    if (data) {
+      return data[0].count
+    }
+    return false
+  }
   
   static async getBydID({ id }) {
 
