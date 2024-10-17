@@ -1,32 +1,11 @@
-import { MovieModel } from "../Models/MovieModel.mjs"
+import { MovieModel } from "../Models/MongoMovieModel.mjs"
 import { validateMovie, validatePartialMovie } from "../Schemas/moviesSchema.mjs"
 export class MovieController{
     static getAll = async (req, res) => {
+
+        const results = await MovieModel.getAll()
+
         
-       const page = Number(req.query.page)
-        const limit = Number(req.query.limit)
-        const offset = (page - 1) * limit
-        const tableLength = await MovieModel.getNumberRows()
-        const results = {}
-
-        const data = await MovieModel.getAll({ offset: offset, limit: limit })
-
-        results.results = data
-
-        if (page > 1) {
-            results.previous = {
-                page: page - 1,
-                limit : limit
-            }
-        }
-
-        if (page < tableLength) {
-            results.next = {
-                page: page + 1,
-                limit : limit
-            }
-        }
-
         res.json(results)
     }
 
